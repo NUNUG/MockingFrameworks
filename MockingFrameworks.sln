@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks", "MockingFrameworks\MockingFrameworks.csproj", "{FD5647E4-D56C-4C29-8483-D307B457FA5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD5647E4-D56C-4C29-8483-D307B457FA5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD5647E4-D56C-4C29-8483-D307B457FA5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD5647E4-D56C-4C29-8483-D307B457FA5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD5647E4-D56C-4C29-8483-D307B457FA5D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EB620FA-9022-48A8-812C-AA20DE6CFC76}
+	EndGlobalSection
+EndGlobal
