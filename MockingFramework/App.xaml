@@ -1,0 +1,9 @@
+﻿<cal:CaliburnApplication
+	x:Class="MockingFramework.App"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:cal="using:Caliburn.Micro"
+	xmlns:local="using:MockingFramework"
+	RequestedTheme="Light">
+
+</cal:CaliburnApplication>
