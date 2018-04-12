@@ -1,5 +1,13 @@
 ﻿using Caliburn.Micro;
+using MockingData;
+using MockingFramework.Models;
+using MockingFramework.Pages.Home;
+using MockingFramework.Pages.Invoice;
+using MockingFramework.Pages.Products;
+using MockingFramework.Pages.Users;
 using MockingFramework.Shell;
+using MockingModels;
+using MockingUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,6 +55,14 @@ namespace MockingFramework
 		protected override void Configure()
 		{
 			IoCContainer.Singleton<ShellViewModel>();
+			IoCContainer.PerRequest<IconScreen, HomeViewModel>();
+			IoCContainer.PerRequest<IconScreen, UsersViewModel>();
+			IoCContainer.PerRequest<IconScreen, InvoiceViewModel>();
+			IoCContainer.PerRequest<IconScreen, ProductsViewModel>();
+			IoCContainer.PerRequest<IUserRepository, UserRepository>();
+			IoCContainer.PerRequest<IProductRepository, ProductRepository>();
+			IoCContainer.PerRequest<IInvoiceRepository, InvoiceRepository>();
+			IoCContainer.Singleton<MockingModels.ILog, FileLogger>();
 		}
 
 		protected override void OnLaunched(LaunchActivatedEventArgs args)

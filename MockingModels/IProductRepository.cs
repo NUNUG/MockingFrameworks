@@ -4,8 +4,8 @@ using System.Text;
 
 namespace MockingModels
 {
-    public interface IProductRepository : IRepository<Product, int>
-    {
-
-    }
+	public interface IProductRepository : IRepository<Product, int>
+	{
+		
+	}
 }

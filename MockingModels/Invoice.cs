@@ -6,6 +6,7 @@ namespace MockingModels
 {
 	public class Invoice
 	{
+		public int InvoiceId { get; set; }
 		public virtual User User { get; set; }
 		public virtual ICollection<Product> Products { get; set; }
 	}

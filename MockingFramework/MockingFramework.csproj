@@ -95,11 +95,22 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\IconScreen.cs" />
+    <Compile Include="Pages\Home\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Home\HomeViewModel.cs" />
+    <Compile Include="Pages\Invoice\InvoiceViewModel.cs" />
+    <Compile Include="Pages\Products\ProductsViewModel.cs" />
+    <Compile Include="Pages\Users\UsersView.xaml.cs">
+      <DependentUpon>UsersView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Users\UsersViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shell\ShellView.xaml.cs">
+    <Compile Include="Pages\Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Shell\ShellViewModel.cs" />
+    <Compile Include="Pages\Shell\ShellViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -132,17 +143,42 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MockingData\MockingData.csproj">
+      <Project>{1787841c-ca49-4a2b-ad32-c5c7fd78bdfb}</Project>
+      <Name>MockingData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MockingModels\MockingModels.csproj">
       <Project>{d22ce844-7dfc-40fb-8c4c-efc0e93c858c}</Project>
       <Name>MockingModels</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MockingUtilities\MockingUtilities.csproj">
+      <Project>{A2D38A7D-8D75-473D-A150-2B3424BA56B6}</Project>
+      <Name>MockingUtilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Shell\ShellView.xaml">
+    <Page Include="Pages\Home\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Invoice\InvoiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Products\ProductsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Shell\ShellView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Users\UsersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
