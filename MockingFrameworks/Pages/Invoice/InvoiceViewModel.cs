@@ -129,7 +129,10 @@ namespace MockingFrameworks.Pages.Invoice
 
 		public void ClearInvoice()
 		{
-			CreatingInvoice = new MockingModels.Invoice();
+			CreatingInvoice = new MockingModels.Invoice()
+			{
+				Products = new List<Product>()
+			};
 		}
 
 		public void UserSelected()

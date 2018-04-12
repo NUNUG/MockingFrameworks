@@ -14,6 +14,7 @@ namespace MockingFrameworks.Tests.FakeItEasy
 	public class InvoiceViewModelTests
 	{
 		protected InvoiceViewModelTestsHelpers Helpers { get; set; }
+		protected CaliburnHelpers CaliburnHelpers { get; set; }
 		protected InvoiceViewModel ViewModel { get; set; }
 		protected IInvoiceRepository InvoiceRepository { get; set; }
 		protected IUserRepository UserRepository { get; set; }
@@ -24,6 +25,7 @@ namespace MockingFrameworks.Tests.FakeItEasy
 		public void Initialize()
 		{
 			Helpers = new InvoiceViewModelTestsHelpers();
+			CaliburnHelpers = new CaliburnHelpers();
 
 			InvoiceRepository = A.Fake<IInvoiceRepository>();
 			UserRepository = A.Fake<IUserRepository>();
@@ -46,16 +48,17 @@ namespace MockingFrameworks.Tests.FakeItEasy
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.Ignored)).WithAnyArguments().ReturnsLazily(fake => fake.Arguments.First() as Invoice);
 			A.CallTo(() => Logger.MinimumLevel).Returns(LogLevel.Warning);
 
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
 			ViewModel.SelectedUser = selectedUser;
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ForEach(product => product.ShouldBeOneOf(selectedProducts.ToArray()));
 
 			ViewModel.SaveInvoice();
 
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.That.Matches(i => i.User == selectedUser))).MustHaveHappenedOnceExactly();
-			A.CallTo(() => Logger.MinimumLevel).MustHaveHappenedOnceExactly();
 			A.CallTo(() => Logger.Debug(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => Logger.Information(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => Logger.Warning(A<string>.Ignored)).MustNotHaveHappened();
@@ -63,7 +66,7 @@ namespace MockingFrameworks.Tests.FakeItEasy
 
 			ViewModel.Errors.ShouldBeNull();
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -78,6 +81,8 @@ namespace MockingFrameworks.Tests.FakeItEasy
 			A.CallTo(() => UserRepository.All()).Returns(users);
 			A.CallTo(() => Logger.MinimumLevel).Returns(LogLevel.Warning);
 
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
 			ViewModel.SelectedUser = selectedUser;
 
 			ViewModel.SaveInvoice();
@@ -88,22 +93,23 @@ namespace MockingFrameworks.Tests.FakeItEasy
 			A.CallTo(() => Logger.Information(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => Logger.Error(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.Ignored)).MustNotHaveHappened();
+			A.CallTo(() => Logger.MinimumLevel).MustHaveHappenedOnceExactly();
 
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ShouldAllBe(product => selectedProducts.Contains(product));
 
 			ViewModel.SaveInvoice();
 
-			A.CallTo(() => Logger.Warning(A<string>.Ignored)).MustHaveHappenedTwiceExactly();
+			A.CallTo(() => Logger.Warning(A<string>.Ignored)).MustHaveHappenedOnceExactly();
 			A.CallTo(() => Logger.Debug(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => Logger.Information(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => Logger.Error(A<string>.Ignored)).MustNotHaveHappened();
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.That.Matches(i => i.User == selectedUser))).MustHaveHappenedOnceExactly();
 
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -119,6 +125,12 @@ namespace MockingFrameworks.Tests.FakeItEasy
 			A.CallTo(() => Logger.MinimumLevel).Returns(LogLevel.Warning);
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.Ignored)).Throws(new ArgumentException("User", "User cannot be null"));
 
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
+
+			foreach (var product in selectedProducts)
+				ViewModel.CreatingInvoice.Products.Add(product);
+
 			ViewModel.SaveInvoice();
 
 			A.CallTo(() => InvoiceRepository.Save(A<Invoice>.Ignored)).MustHaveHappenedOnceExactly();
@@ -131,16 +143,27 @@ namespace MockingFrameworks.Tests.FakeItEasy
 		public void InvoiceViewModel_UserSelected_LoadsCommonProductsForUserThatHasInvoices()
 		{
 			var products = A.CollectionOfDummy<Product>(50);
-			var user = A.Dummy<User>();
+			var user = A.Fake<User>(builder => builder.ConfigureFake(u =>
+			{
+				u.Invoices = Enumerable.Range(0, 5)
+				.Select(i => new Invoice
+				{
+					User = u,
+					InvoiceId = i,
+					Products = products.Take(5).ToList()
+				}).ToList();
+			}));
 			IEnumerable<Invoice> invoices;
 
 			A.CallTo(() => InvoiceRepository.HasInvoices(user.UserId, out invoices))
-			.Returns(false)
-			.AssignsOutAndRefParameters(new List<Invoice>());
+			.Returns(true)
+			.AssignsOutAndRefParameters(user.Invoices);
 
-			A.CallTo(() => InvoiceRepository.HasInvoices(user.UserId, out invoices))
-			.Returns(false)
-			.AssignsOutAndRefParametersLazily(fake => new[] { new List<Invoice>() });
+			//A.CallTo(() => InvoiceRepository.HasInvoices(user.UserId, out invoices))
+			//.Returns(true)
+			//.AssignsOutAndRefParametersLazily(fake => new[] { user.Invoices });
+
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 
@@ -155,6 +178,8 @@ namespace MockingFrameworks.Tests.FakeItEasy
 		public void InvoiceViewModel_UserSelected_HidesProductsForUserWithoutInvoices()
 		{
 			var user = Helpers.GenerateUsers(1).First();
+
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 

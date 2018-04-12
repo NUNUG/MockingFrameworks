@@ -18,12 +18,14 @@ namespace MockingFrameworks.Tests.Moq
 		protected UsersViewModel ViewModel { get; set; }
 		protected Mock<IUserRepository> UserRepository { get; set; }
 		protected InvoiceViewModelTestsHelpers Helpers { get; set; }
+		protected CaliburnHelpers CaliburnHelpers { get; set; }
 
 		[TestInitialize]
 		public void Initialize()
 		{
 			UserRepository = new Mock<IUserRepository>();
 			Helpers = new InvoiceViewModelTestsHelpers();
+			CaliburnHelpers = new CaliburnHelpers();
 		}
 
 		[TestMethod]
@@ -33,9 +35,12 @@ namespace MockingFrameworks.Tests.Moq
 			var users = Helpers.GenerateUsers(10);
 
 			UserRepository.Setup(u => u.All()).Returns(users);
-			ViewModel.Filter = UsersViewModel.Filters.Email;
+			ViewModel = new UsersViewModel(UserRepository.Object)
+			{
+				Filter = UsersViewModel.Filters.Email
+			};
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
-			ViewModel = new UsersViewModel(UserRepository.Object);
 
 			ViewModel.Users.ShouldNotBeNull();
 			ViewModel.Users.Count.ShouldBe(10);
@@ -53,9 +58,12 @@ namespace MockingFrameworks.Tests.Moq
 			var users = Helpers.GenerateUsers(10);
 
 			UserRepository.Setup(u => u.All()).Returns(users);
-			ViewModel.Filter = UsersViewModel.Filters.Username;
+			ViewModel = new UsersViewModel(UserRepository.Object)
+			{
+				Filter = UsersViewModel.Filters.Username
+			};
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
-			ViewModel = new UsersViewModel(UserRepository.Object);
 
 
 			ViewModel.Users.ShouldNotBeNull();
@@ -74,9 +82,12 @@ namespace MockingFrameworks.Tests.Moq
 			var users = Helpers.GenerateUsers(10);
 
 			UserRepository.Setup(u => u.All()).Returns(users);
-			ViewModel.Filter = UsersViewModel.Filters.Id;
+			ViewModel = new UsersViewModel(UserRepository.Object)
+			{
+				Filter = UsersViewModel.Filters.Id
+			};
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
-			ViewModel = new UsersViewModel(UserRepository.Object);
 
 
 			ViewModel.Users.ShouldNotBeNull();

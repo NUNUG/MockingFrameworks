@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MockingFrameworks.Tests.NSubstitute
 {
 	[TestClass]
-	public class ProducsViewModelTests
+	public class ProductsViewModelTests
 	{
 	}
 }

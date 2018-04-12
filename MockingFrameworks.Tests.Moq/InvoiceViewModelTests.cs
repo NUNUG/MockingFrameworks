@@ -16,6 +16,7 @@ namespace MockingFrameworks.Tests.Moq
 	public class InvoiceViewModelTests
 	{
 		protected InvoiceViewModelTestsHelpers Helpers { get; set; }
+		protected CaliburnHelpers CaliburnHelpers { get; set; }
 		protected InvoiceViewModel ViewModel { get; set; }
 		protected Mock<IInvoiceRepository> InvoiceRepository { get; set; }
 		protected Mock<IUserRepository> UserRepository { get; set; }
@@ -26,6 +27,7 @@ namespace MockingFrameworks.Tests.Moq
 		public void Initialize()
 		{
 			Helpers = new InvoiceViewModelTestsHelpers();
+			CaliburnHelpers = new CaliburnHelpers();
 
 			InvoiceRepository = new Mock<IInvoiceRepository>();
 			UserRepository = new Mock<IUserRepository>();
@@ -51,17 +53,17 @@ namespace MockingFrameworks.Tests.Moq
 			{
 				SelectedUser = selectedUser
 			};
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ForEach(product => product.ShouldBeOneOf(selectedProducts.ToArray()));
 
 			ViewModel.SaveInvoice();
 
 
 			InvoiceRepository.Verify(repo => repo.Save(It.Is<Invoice>(i => i.User == selectedUser)), Times.Once());
-			Logger.VerifyGet(log => log.MinimumLevel, Times.AtLeastOnce());
 			Logger.Verify(log => log.Debug(It.IsAny<string>()), Times.Never());
 			Logger.Verify(log => log.Information(It.IsAny<string>()), Times.Never());
 			Logger.Verify(log => log.Warning(It.IsAny<string>()), Times.Never());
@@ -69,7 +71,7 @@ namespace MockingFrameworks.Tests.Moq
 
 			ViewModel.Errors.ShouldBeNull();
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -88,10 +90,12 @@ namespace MockingFrameworks.Tests.Moq
 			{
 				SelectedUser = selectedUser
 			};
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SaveInvoice();
 
 			ViewModel.Errors.ShouldNotBeEmpty();
+			Logger.VerifyGet(log => log.MinimumLevel, Times.AtLeastOnce());
 			Logger.Verify(log => log.Warning(It.IsAny<string>()), Times.Once());
 			Logger.Verify(log => log.Debug(It.IsAny<string>()), Times.Never());
 			Logger.Verify(log => log.Information(It.IsAny<string>()), Times.Never());
@@ -101,18 +105,18 @@ namespace MockingFrameworks.Tests.Moq
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ShouldAllBe(product => selectedProducts.Contains(product));
 
 			ViewModel.SaveInvoice();
 
-			Logger.Verify(log => log.Warning(It.IsAny<string>()), Times.Exactly(2));
+			Logger.Verify(log => log.Warning(It.IsAny<string>()), Times.Exactly(1));
 			Logger.Verify(log => log.Debug(It.IsAny<string>()), Times.Never());
 			Logger.Verify(log => log.Information(It.IsAny<string>()), Times.Never());
 			Logger.Verify(log => log.Error(It.IsAny<string>()), Times.Never());
-			InvoiceRepository.Verify(repo => repo.Save(It.Is<Invoice>(i => i.User == selectedUser)), Times.Never());
+			InvoiceRepository.Verify(repo => repo.Save(It.Is<Invoice>(i => i.User == selectedUser)), Times.Once());
 
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -129,6 +133,10 @@ namespace MockingFrameworks.Tests.Moq
 			InvoiceRepository.Setup(repo => repo.Save(It.IsAny<Invoice>())).Throws(new ArgumentException("User", "User cannot be null"));
 
 			ViewModel = new InvoiceViewModel(InvoiceRepository.Object, UserRepository.Object, ProductRepository.Object, Logger.Object);
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
+			foreach (var product in selectedProducts)
+				ViewModel.CreatingInvoice.Products.Add(product);
 
 			ViewModel.SaveInvoice();
 
@@ -142,10 +150,13 @@ namespace MockingFrameworks.Tests.Moq
 		public void InvoiceViewModel_UserSelected_LoadsCommonProductsForUserThatHasInvoices()
 		{
 			var products = Helpers.GenerateProducts(15);
-			var user = Helpers.GenerateUsers(1, products).First();
+			var user = Helpers.GenerateUsers(10, products).Last();
 
-			var invoices = Enumerable.Empty<Invoice>();
-			InvoiceRepository.Setup(repo => repo.HasInvoices(user.UserId, out invoices)).Returns(false);
+			IEnumerable<Invoice> invoices = user.Invoices;
+			InvoiceRepository.Setup(repo => repo.HasInvoices(user.UserId, out invoices)).Returns(true);
+
+			ViewModel = new InvoiceViewModel(InvoiceRepository.Object, UserRepository.Object, ProductRepository.Object, Logger.Object);
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 
@@ -160,6 +171,9 @@ namespace MockingFrameworks.Tests.Moq
 		public void InvoiceViewModel_UserSelected_HidesProductsForUserWithoutInvoices()
 		{
 			var user = Helpers.GenerateUsers(1).First();
+
+			ViewModel = new InvoiceViewModel(InvoiceRepository.Object, UserRepository.Object, ProductRepository.Object, Logger.Object);
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 

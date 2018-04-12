@@ -14,6 +14,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 		protected UsersViewModel ViewModel { get; set; }
 		protected IUserRepository UserRepository { get; set; }
 		protected InvoiceViewModelTestsHelpers Helpers { get; set; }
+		protected CaliburnHelpers CaliburnHelpers { get; set; }
 
 		[TestInitialize]
 		public void Initialize()
@@ -21,6 +22,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 			UserRepository = Substitute.For<IUserRepository>();
 			ViewModel = new UsersViewModel(UserRepository);
 			Helpers = new InvoiceViewModelTestsHelpers();
+			CaliburnHelpers = new CaliburnHelpers();
 		}
 
 		[TestMethod]
@@ -31,6 +33,9 @@ namespace MockingFrameworks.Tests.NSubstitute
 
 			UserRepository.All().Returns(users);
 			ViewModel.Filter = UsersViewModel.Filters.Email;
+
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
 			ViewModel.Users.ShouldNotBeNull();
 			ViewModel.Users.Count.ShouldBe(10);
 
@@ -48,6 +53,9 @@ namespace MockingFrameworks.Tests.NSubstitute
 
 			UserRepository.All().Returns(users);
 			ViewModel.Filter = UsersViewModel.Filters.Username;
+
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
 			ViewModel.Users.ShouldNotBeNull();
 			ViewModel.Users.Count.ShouldBe(10);
 
@@ -65,6 +73,9 @@ namespace MockingFrameworks.Tests.NSubstitute
 
 			UserRepository.All().Returns(users);
 			ViewModel.Filter = UsersViewModel.Filters.Id;
+
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
 			ViewModel.Users.ShouldNotBeNull();
 			ViewModel.Users.Count.ShouldBe(10);
 

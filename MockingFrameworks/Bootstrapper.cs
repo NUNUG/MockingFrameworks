@@ -23,9 +23,9 @@ namespace MockingFrameworks
 
 		public Bootstrapper()
 		{
-			Initialize();
-
 			Container = new SimpleContainer();
+
+			Initialize();
 		}
 
 		protected override void BuildUp(object instance) => Container.BuildUp(instance);

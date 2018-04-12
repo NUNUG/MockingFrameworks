@@ -16,6 +16,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 	public class InvoiceViewModelTests
 	{
 		protected InvoiceViewModelTestsHelpers Helpers { get; set; }
+		protected CaliburnHelpers CaliburnHelpers { get; set; }
 		protected InvoiceViewModel ViewModel { get; set; }
 		protected IInvoiceRepository InvoiceRepository { get; set; }
 		protected IUserRepository UserRepository { get; set; }
@@ -26,6 +27,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 		public void Initialize()
 		{
 			Helpers = new InvoiceViewModelTestsHelpers();
+			CaliburnHelpers = new CaliburnHelpers();
 
 			InvoiceRepository = Substitute.For<IInvoiceRepository>();
 			UserRepository = Substitute.For<IUserRepository>();
@@ -47,14 +49,15 @@ namespace MockingFrameworks.Tests.NSubstitute
 
 			ProductRepository.All().Returns(products);
 			UserRepository.All().Returns(users);
-			InvoiceRepository.Save(Arg.Any<Invoice>()).WhenForAnyArgs(i => { i.InvoiceId = invoiceId; });
+			InvoiceRepository.WhenForAnyArgs(repo => repo.Save(Arg.Any<Invoice>())).Do(info => info.Arg<Invoice>().InvoiceId = invoiceId);
 			Logger.MinimumLevel.Returns(LogLevel.Warning);
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
 			ViewModel.SelectedUser = selectedUser;
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ForEach(product => product.ShouldBeOneOf(selectedProducts.ToArray()));
 
 			// Invoke
 			ViewModel.SaveInvoice();
@@ -62,8 +65,6 @@ namespace MockingFrameworks.Tests.NSubstitute
 			// Assert
 			InvoiceRepository.Received(1).Save(Arg.Is<Invoice>(i => i.User == selectedUser));
 
-			// Here we have to set a throw-away variable because the compiler won't like it otherwise
-			var _ = Logger.Received(1).MinimumLevel;
 			Logger.DidNotReceive().Debug(Arg.Any<string>());
 			Logger.DidNotReceive().Information(Arg.Any<string>());
 			Logger.DidNotReceive().Warning(Arg.Any<string>());
@@ -71,7 +72,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 
 			ViewModel.Errors.ShouldBeNull();
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -86,6 +87,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 			ProductRepository.All().Returns(products);
 			UserRepository.All().Returns(users);
 			Logger.MinimumLevel.Returns(LogLevel.Warning);
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = selectedUser;
 
@@ -99,24 +101,33 @@ namespace MockingFrameworks.Tests.NSubstitute
 			Logger.DidNotReceive().Debug(Arg.Any<string>());
 			Logger.DidNotReceive().Information(Arg.Any<string>());
 			Logger.DidNotReceive().Error(Arg.Any<string>());
+			
+			// Here we have to set a throw-away variable because the compiler won't like it otherwise
+			var _ = Logger.Received(1).MinimumLevel;
 
 			foreach (var product in selectedProducts)
 				ViewModel.CreatingInvoice.Products.Add(product);
 
-			ViewModel.CreatingInvoice.Products.ShouldBeOneOf(selectedProducts.ToArray());
+			ViewModel.CreatingInvoice.Products.ForEach(product => product.ShouldBeOneOf(selectedProducts.ToArray()));
 
 			// Invoke
 			ViewModel.SaveInvoice();
 
 			// Assert
 			InvoiceRepository.Received(1).Save(Arg.Is<Invoice>(i => i.User == selectedUser));
-			Logger.Received(2).Warning(Arg.Any<string>());
+			
+			// Here we have to set a throw-away variable because the compiler won't like it otherwise
+			_ = Logger.Received(1).MinimumLevel;
+
+			Logger.Received(1).Warning(Arg.Any<string>());
 			Logger.DidNotReceive().Debug(Arg.Any<string>());
 			Logger.DidNotReceive().Information(Arg.Any<string>());
 			Logger.DidNotReceive().Error(Arg.Any<string>());
 
+			ViewModel.Errors.ShouldNotBeNull();
+			ViewModel.Errors.ShouldNotBeEmpty();
 			ViewModel.CreatingInvoice.User.ShouldBeNull();
-			ViewModel.CreatingInvoice.Products.ShouldBeNull();
+			ViewModel.CreatingInvoice.Products.ShouldBeEmpty();
 		}
 
 		[TestMethod]
@@ -132,6 +143,10 @@ namespace MockingFrameworks.Tests.NSubstitute
 			Logger.MinimumLevel.Returns(LogLevel.Warning);
 			InvoiceRepository.When(repo => repo.Save(Arg.Any<Invoice>())).Do(repo => throw new ArgumentException("User", "User cannot be null"));
 
+			CaliburnHelpers.ActivateViewModel(ViewModel);
+
+			foreach (var product in selectedProducts)
+				ViewModel.CreatingInvoice.Products.Add(product);
 
 			ViewModel.SaveInvoice();
 
@@ -145,13 +160,14 @@ namespace MockingFrameworks.Tests.NSubstitute
 		public void InvoiceViewModel_UserSelectedLoadsCommonProductsForUserThatHasInvoices()
 		{
 			var products = Helpers.GenerateProducts(15);
-			var user = Helpers.GenerateUsers(1, products).First();
+			var user = Helpers.GenerateUsers(10, products).Last();
 
 			InvoiceRepository.HasInvoices(user.UserId, out var invoices).Returns(x =>
 			{
-				x[1] = new List<Invoice>();
-				return false;
+				x[1] = user.Invoices;
+				return true;
 			});
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 
@@ -166,6 +182,7 @@ namespace MockingFrameworks.Tests.NSubstitute
 		public void InvoiceViewModel_UserSelectedHidesProductsForUserWithoutInvoices()
 		{
 			var user = Helpers.GenerateUsers(1).First();
+			CaliburnHelpers.ActivateViewModel(ViewModel);
 
 			ViewModel.SelectedUser = user;
 
