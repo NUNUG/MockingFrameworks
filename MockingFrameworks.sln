@@ -7,17 +7,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockingModels", "MockingMod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFramework", "MockingFramework\MockingFramework.csproj", "{382B00F6-85A4-407A-8120-3D9A887F536E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.NSubstitute", "MockingFrameworks.Tests.NSubstitute\MockingFrameworks.Tests.NSubstitute.csproj", "{DB3EC48A-0035-43BF-AE13-656919D02490}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.NSubstitute", "MockingFramework.Tests.NSubstitute\MockingFrameworks.Tests.NSubstitute.csproj", "{DB3EC48A-0035-43BF-AE13-656919D02490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.Moq", "MockingFrameworks.Tests.Moq\MockingFrameworks.Tests.Moq.csproj", "{3EAE4DAD-C25E-4F0E-BE95-8A2985BF8EC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.Moq", "MockingFramework.Tests.Moq\MockingFrameworks.Tests.Moq.csproj", "{3EAE4DAD-C25E-4F0E-BE95-8A2985BF8EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.FakeItEasy", "MockingFrameworks.Tests.FakeItEasy\MockingFrameworks.Tests.FakeItEasy.csproj", "{84E41F70-8A49-4F46-959D-8DABB89A9B9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks.Tests.FakeItEasy", "MockingFramework.Tests.FakeItEasy\MockingFrameworks.Tests.FakeItEasy.csproj", "{84E41F70-8A49-4F46-959D-8DABB89A9B9A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockingData", "MockingData\MockingData.csproj", "{1787841C-CA49-4A2B-AD32-C5C7FD78BDFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Shared", "Tests.Shared\Tests.Shared.csproj", "{4D43DDE0-7F8E-4A22-A163-955B6815DC35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingUtilities", "MockingUtilities\MockingUtilities.csproj", "{A2D38A7D-8D75-473D-A150-2B3424BA56B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockingFrameworks", "MockingFrameworks\MockingFrameworks.csproj", "{BB9ABBEC-0443-49F5-85AE-2495F234B588}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -180,6 +182,22 @@ Global
 		{A2D38A7D-8D75-473D-A150-2B3424BA56B6}.Release|x64.Build.0 = Release|Any CPU
 		{A2D38A7D-8D75-473D-A150-2B3424BA56B6}.Release|x86.ActiveCfg = Release|Any CPU
 		{A2D38A7D-8D75-473D-A150-2B3424BA56B6}.Release|x86.Build.0 = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|ARM.Build.0 = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|x64.Build.0 = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Debug|x86.Build.0 = Debug|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|ARM.ActiveCfg = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|ARM.Build.0 = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|x64.ActiveCfg = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|x64.Build.0 = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|x86.ActiveCfg = Release|Any CPU
+		{BB9ABBEC-0443-49F5-85AE-2495F234B588}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

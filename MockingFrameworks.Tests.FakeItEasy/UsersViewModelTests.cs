@@ -1,6 +1,5 @@
 ﻿using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockingFramework.Pages.Users;
 using MockingModels;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using Shouldly;
 using System.Linq.Expressions;
 using Tests.Shared;
+using MockingFrameworks.Pages.Users;
 
 namespace MockingFrameworks.Tests.FakeItEasy
 {

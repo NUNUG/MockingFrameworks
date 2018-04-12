@@ -1,0 +1,32 @@
+﻿<Page
+	x:Class="MockingFrameworks.Shell.ShellView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+	xmlns:local="clr-namespace:MockingFrameworks"
+	xmlns:cal="http://www.caliburnproject.org"
+	TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+	TextElement.FontWeight="Regular"
+	TextElement.FontSize="13"
+	TextOptions.TextFormattingMode="Ideal"
+	TextOptions.TextRenderingMode="Auto"
+	Background="{DynamicResource MaterialDesignPaper}"
+	FontFamily="{DynamicResource MaterialDesignFont}"
+	mc:Ignorable="d">
+	
+	<!--<NavigationView x:Name="Navigation" IsSettingsVisible="False" MenuItemsSource="{Binding Items}"
+					CompactPaneLength="50" OpenPaneLength="200" Header="Mocking Frameworks" IsPaneOpen="False"
+					cal:Message.Attach="[Event SelectionChanged] = [Action NavigationChanged($eventArgs)]"
+					SelectedItem="{Binding SelectedItem}">
+		<NavigationView.MenuItemTemplate>
+			<DataTemplate>
+				<NavigationViewItem Background="Transparent" Icon="{Binding Icon}" Content="{Binding DisplayName}" Width="200" />
+			</DataTemplate>
+		</NavigationView.MenuItemTemplate>
+		<ContentControl x:Name="ActiveItem" />
+	</NavigationView>-->
+
+	<material:TransitioningContent OpeningEffect="{material:TransitionEffect ExpandIn}" Content="{Binding ActiveItem}" />
+</Page>

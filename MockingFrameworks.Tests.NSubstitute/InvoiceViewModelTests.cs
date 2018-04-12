@@ -1,6 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockingFramework.Pages.Invoice;
-using MockingModels;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -9,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Tests.Shared;
 using Shouldly;
+using MockingFrameworks.Pages.Invoice;
+using MockingModels;
 
 namespace MockingFrameworks.Tests.NSubstitute
 {

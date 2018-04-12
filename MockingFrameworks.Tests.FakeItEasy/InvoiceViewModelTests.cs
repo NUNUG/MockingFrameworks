@@ -1,14 +1,12 @@
 ﻿using FakeItEasy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MockingFramework.Pages.Invoice;
 using MockingModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tests.Shared;
 using Shouldly;
+using MockingFrameworks.Pages.Invoice;
 
 namespace MockingFrameworks.Tests.FakeItEasy
 {
